@@ -1,0 +1,14 @@
+services:
+  webserver:
+    image: ubuntu-webserver-nano
+    build: .
+    container_name: webserver-5a-26-1
+    hostname: webserver-5a-26-1
+    ports:
+      - "8080:80"
+      - "8443:443"
+      - "2222:22"
+    environment:
+      - ROOT_PASSWORD=htl
+    volumes:
+      - ./data:/var/www/html
