@@ -1,0 +1,28 @@
+name: ubuntu2604-apache-ssh
+services:
+  web:
+    build: .
+    image: local/ubuntu2604-apache-ssh:latest
+    container_name: ubuntu2604-apache-ssh
+    restart: unless-stopped
+    init: true
+    environment:
+      TZ: ${TZ:-Europe/Vienna}
+      ROOT_PASSWORD: ${ROOT_PASSWORD:?Bitte ROOT_PASSWORD in .env setzen}
+      SITE_DNS_NAMES: ${SITE_DNS_NAMES:-localhost}
+      SITE_IP_ADDRESSES: ${SITE_IP_ADDRESSES:-127.0.0.1}
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${HTTP_PORT:-8080}:80"
+      - "${BIND_ADDRESS:-127.0.0.1}:${HTTPS_PORT:-8443}:443"
+      - "${BIND_ADDRESS:-127.0.0.1}:${SSH_PORT:-2222}:22"
+    volumes:
+      - "${WEB_DIR:-./www}:/var/www/html"
+      - "${CERT_DIR:-./certificates}:/certificates"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--insecure", "https://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+    security_opt:
+      - no-new-privileges:true

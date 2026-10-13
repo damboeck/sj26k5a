@@ -1,0 +1,34 @@
+LOKALES HTTPS-ZERTIFIKAT / BROWSER-IMPORT
+==========================================
+
+Beim ersten Start werden in DIESEM Verzeichnis erzeugt:
+  ca.crt       <- dieses Zertifikat als vertrauenswuerdige Root-CA importieren
+  ca.key       <- GEHEIMER CA-Schluessel; niemals weitergeben!
+  server.crt   <- Apache-Serverzertifikat
+  server.key   <- GEHEIMER Server-Schluessel; niemals weitergeben!
+
+Windows 11: Root-CA fuer Firefox/Chrome/Edge installieren
+-----------------------------------------------------------
+1. Fuer Chrome/Edge: Windows-Taste -> certmgr.msc
+   -> Vertrauenswuerdige Stammzertifizierungsstellen -> Zertifikate
+   -> Alle Aufgaben -> Importieren -> ca.crt auswaehlen.
+   (Nur im eigenen Benutzerkontext installieren; Admin-Zugriff ist
+   nur fuer den lokalen Computer-Zertifikatspeicher erforderlich.)
+2. Firefox: Einstellungen -> Datenschutz & Sicherheit -> Zertifikate
+   -> Zertifikate anzeigen -> Zertifizierungsstellen -> Importieren
+   -> ca.crt auswaehlen und Vertrauen fuer Websites bestaetigen.
+   Falls Firefox den Windows-Zertifikatsspeicher verwendet, ist
+   Schritt 2 eventuell nicht notwendig.
+3. Browser NEU STARTEN, https://localhost:8443 aufrufen.
+
+Wichtig: Durch CA-Import vertraut der Browser allen Zertifikaten,
+welche mit ca.key signiert werden. Dieser Schluessel muss geheim bleiben.
+Nur auf deinem eigenen Rechner und fuer Testzwecke verwenden!
+
+Im lokalen Netzwerk: SITE_DNS_NAMES bzw. SITE_IP_ADDRESSES vor dem ersten
+Start in .env setzen, BIND_ADDRESS=0.0.0.0. Bei nachtraeglicher Aenderung
+server.crt UND server.key entfernen, dann Container neu starten.
+Die bestehende CA ca.crt/ca.key darf erhalten bleiben.
+
+Gueltigkeit Serverzertifikat: 365 Tage, danach neu erzeugen.
+SSH und Apache vertrauen NICHT dem importierten Zertifikat fuer SSH.

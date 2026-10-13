@@ -1,0 +1,11 @@
+services:
+  apache2:
+    image: ubapna2
+    hostname: ubapna2
+    container_name: ubapna2
+    volumes:
+      - C:\github\Unterricht-HTL-DAMB\sj26k5a\docker\vol2:/var/www/html
+    environment:
+      - servername=ubapna2
+    ports:
+      - "12680:80"
